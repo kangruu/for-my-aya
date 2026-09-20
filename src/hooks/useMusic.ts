@@ -7,14 +7,11 @@ const FADE_STEP = 0.03
 const FADE_TICK_MS = 120
 
 /**
- * Looping background music. Browsers block autoplay, so `begin()` must be
- * called from a user gesture (the tap on the envelope) to unlock the audio;
- * nothing is audible until `start()` fades the volume up.
+ * Looping background music. Browsers block autoplay, so `start()` must be
+ * called from a user gesture (the tap on the envelope) — it then plays the
+ * song from its very beginning, fading up to the target volume right away.
  */
-export function useMusic(rawSrc: string) {
-  // Root-relative public paths need the deploy base prepended when the app
-  // isn't served from the domain root (e.g. GitHub Pages /for-my-aya/).
-  const src = rawSrc.startsWith('/') ? `${import.meta.env.BASE_URL}${rawSrc.slice(1)}` : rawSrc
+export function useMusic(src: string) {
   const audio = useRef<HTMLAudioElement | null>(null)
   const fade = useRef<ReturnType<typeof setInterval> | undefined>(undefined)
   const [playing, setPlaying] = useState(false)
@@ -36,42 +33,26 @@ export function useMusic(rawSrc: string) {
     }
   }, [src])
 
-  const fadeIn = useCallback((el: HTMLAudioElement) => {
-    clearInterval(fade.current)
-    fade.current = setInterval(() => {
-      el.volume = Math.min(TARGET_VOLUME, el.volume + FADE_STEP)
-      if (el.volume >= TARGET_VOLUME) clearInterval(fade.current)
-    }, FADE_TICK_MS)
-  }, [])
-
-  // Called directly inside a user gesture (the envelope tap): starts playback
-  // silently at volume 0, which satisfies strict autoplay policies (iOS
-  // Safari). She won't hear anything until `start()` fades it in.
-  const begin = useCallback(() => {
-    const el = audio.current
-    if (!el || !el.paused) return
-    el.volume = 0
-    el.play().then(() => setPlaying(true)).catch(() => setPlaying(false))
-  }, [])
-
-  // Fades the music up to the target volume, playing it first if needed.
+  // Called directly inside a user gesture (the envelope tap): restarts the
+  // song from the top and fades it in immediately.
   const start = useCallback(() => {
     const el = audio.current
     if (!el) return
-    if (el.paused) {
-      el.volume = 0
-      el.play()
-        .then(() => {
-          setPlaying(true)
-          fadeIn(el)
-        })
-        .catch(() => setPlaying(false))
-    } else {
-      fadeIn(el)
-    }
-  }, [fadeIn])
+    clearInterval(fade.current)
+    el.currentTime = 0
+    el.volume = 0
+    el.play()
+      .then(() => {
+        setPlaying(true)
+        fade.current = setInterval(() => {
+          el.volume = Math.min(TARGET_VOLUME, el.volume + FADE_STEP)
+          if (el.volume >= TARGET_VOLUME) clearInterval(fade.current)
+        }, FADE_TICK_MS)
+      })
+      .catch(() => setPlaying(false))
+  }, [])
 
-  // Pauses and resets the volume so the next `begin()`/`start()` starts silent.
+  // Pauses and resets the volume so the next `start()` begins fresh.
   const stop = useCallback(() => {
     const el = audio.current
     if (!el) return
@@ -84,9 +65,23 @@ export function useMusic(rawSrc: string) {
   const toggle = useCallback(() => {
     const el = audio.current
     if (!el) return
-    if (el.paused) start()
-    else stop()
-  }, [start, stop])
+    if (el.paused) {
+      // Manual start mid-song keeps the current position; volume picks up
+      // from 0 with the same fade.
+      el.volume = 0
+      el.play()
+        .then(() => {
+          setPlaying(true)
+          fade.current = setInterval(() => {
+            el.volume = Math.min(TARGET_VOLUME, el.volume + FADE_STEP)
+            if (el.volume >= TARGET_VOLUME) clearInterval(fade.current)
+          }, FADE_TICK_MS)
+        })
+        .catch(() => setPlaying(false))
+    } else {
+      stop()
+    }
+  }, [stop])
 
-  return { playing, begin, start, stop, toggle }
+  return { playing, start, stop, toggle }
 }
