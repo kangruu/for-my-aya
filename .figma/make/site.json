@@ -1,0 +1,10 @@
+{
+  "description": "Experience a romantic love letter journey with a vintage design, allowing users to read heartfelt messages in an intimate, nostalgic setting.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
