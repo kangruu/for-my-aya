@@ -258,4 +258,4 @@ export const FINALE = {
 
 // Drop your files into /public with these names.
 export const LILY_IMAGE = '/lily.png' // transparent sticker; falls back to a drawn lily
-export const MUSIC_SRC = '/star-song.mp3' // looped background music — "Star Song" by Rob Deniel (minus one)
+export const MUSIC_SRC = '/ikaw-at-ako.mp3' // looped background music — "Ikaw at Ako" by Tj Monterde (karaoke studio version)
