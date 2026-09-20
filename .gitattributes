@@ -5,6 +5,10 @@
 # Images & Graphics
 # ---------------------------------------------------------------------------
 *.png                filter=lfs diff=lfs merge=lfs -text
+# The lily sticker overrides the LFS rule above: later patterns win, and the
+# slash-free pattern matches both public/ and the gh-pages root copy.
+# (GitHub Pages cannot read Git LFS objects.)
+*lily.png !filter !diff !merge -text
 *.jpg                filter=lfs diff=lfs merge=lfs -text
 *.jpeg               filter=lfs diff=lfs merge=lfs -text
 *.gif                filter=lfs diff=lfs merge=lfs -text
