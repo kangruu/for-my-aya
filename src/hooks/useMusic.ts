@@ -11,7 +11,10 @@ const FADE_TICK_MS = 120
  * called from a user gesture (the tap on the envelope) to unlock the audio;
  * nothing is audible until `start()` fades the volume up.
  */
-export function useMusic(src: string) {
+export function useMusic(rawSrc: string) {
+  // Root-relative public paths need the deploy base prepended when the app
+  // isn't served from the domain root (e.g. GitHub Pages /for-my-aya/).
+  const src = rawSrc.startsWith('/') ? `${import.meta.env.BASE_URL}${rawSrc.slice(1)}` : rawSrc
   const audio = useRef<HTMLAudioElement | null>(null)
   const fade = useRef<ReturnType<typeof setInterval> | undefined>(undefined)
   const [playing, setPlaying] = useState(false)

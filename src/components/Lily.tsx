@@ -36,7 +36,7 @@ export function LilyImage({ size }: { size: number }) {
   if (failed) return <LilySvg size={size} />
   return (
     <img
-      src={LILY_IMAGE}
+      src={`${import.meta.env.BASE_URL}${LILY_IMAGE.replace(/^\//, '')}`}
       alt=""
       width={size}
       height={size}
