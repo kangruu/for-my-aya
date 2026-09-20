@@ -253,7 +253,7 @@ export const FINALE = {
   // Replace with your own words explaining the link.
   note: "I made one more thing for you. Tap the lily whenever you're ready.",
   linkLabel: 'open your gift',
-  linkUrl: 'https://foxtale-studio-git-main-jmslydzs-projects.vercel.app/',
+  linkUrl: 'https://foxtale-studio.vercel.app/',
 } as const
 
 // Drop your files into /public with these names.
