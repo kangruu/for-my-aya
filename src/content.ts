@@ -243,7 +243,7 @@ One ordinary day at a time.
 export const FINALE = {
   // Shown first, line by line, above the big headline.
   intro: [
-    'For you, Aya.',
+    'For you, My Aya.',
     'For every worry, every doubt, and every “what if.”',
     'I hope this reminds you—',
     'Ikaw lang ang minamahal ko.',
