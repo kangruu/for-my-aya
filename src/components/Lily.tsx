@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { LILY_IMAGE } from '../content'
+import { assetUrl } from '../lib/asset'
 
 const PETAL = 'M20 21 C12 14 13 5 20 1 C27 5 28 14 20 21 Z'
 
@@ -36,7 +37,7 @@ export function LilyImage({ size }: { size: number }) {
   if (failed) return <LilySvg size={size} />
   return (
     <img
-      src={`${import.meta.env.BASE_URL}${LILY_IMAGE.replace(/^\//, '')}`}
+      src={assetUrl(LILY_IMAGE)}
       alt=""
       width={size}
       height={size}

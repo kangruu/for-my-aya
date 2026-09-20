@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { assetUrl } from '../lib/asset'
 
 // 50% — warm enough to feel like part of the scene, quiet enough that
 // reading the letter is never interrupted.
@@ -11,7 +12,10 @@ const FADE_TICK_MS = 120
  * called from a user gesture (the tap on the envelope) — it then plays the
  * song from its very beginning, fading up to the target volume right away.
  */
-export function useMusic(src: string) {
+export function useMusic(rawSrc: string) {
+  // Root-relative public paths need the deploy base prepended when the app
+  // isn't served from the domain root (e.g. GitHub Pages /for-my-aya/).
+  const src = assetUrl(rawSrc)
   const audio = useRef<HTMLAudioElement | null>(null)
   const fade = useRef<ReturnType<typeof setInterval> | undefined>(undefined)
   const [playing, setPlaying] = useState(false)
