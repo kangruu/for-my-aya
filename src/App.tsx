@@ -37,6 +37,14 @@ export default function App() {
 
   useEffect(() => () => timers.current.forEach(clearTimeout), [])
 
+  // Music: silently unlocked by the envelope tap, then faded in once she is
+  // at the letter. Returning to the envelope (replay) pauses it again; the
+  // finale keeps whatever is playing.
+  useEffect(() => {
+    if (scene === 'letter') music.start()
+    else if (scene === 'envelope') music.stop()
+  }, [scene, music.start, music.stop])
+
   function replay() {
     setCurtain(true)
     timers.current.push(
@@ -56,7 +64,7 @@ export default function App() {
         style={{ background: '#F5EBDD', boxShadow: '0 24px 80px rgba(0,0,0,0.7), 0 4px 16px rgba(0,0,0,0.5)' }}
       >
         <Layer show={scene === 'envelope'} z={1}>
-          <EnvelopeScene key={run} onStart={() => void music.start()} onOpened={() => setScene('letter')} />
+          <EnvelopeScene key={run} onStart={() => music.begin()} onOpened={() => setScene('letter')} />
         </Layer>
 
         {scene !== 'envelope' && (
